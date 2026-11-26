@@ -1,0 +1,12 @@
+{
+  "scheduler": { "mode": "dedicated" },
+  "data_dir": "./data",
+  "web_dir": "",
+  "sdrs": [
+    { "serial": "ISM433",   "role": "rf433", "freq": "433.92M" },
+    { "serial": "ADSB1090", "role": "adsb" },
+    { "serial": "SCAN",     "role": "sweep", "range": "24M:1750M:1M" },
+    { "serial": "SUB1G",    "role": "multi", "rotate": ["fobs315", "ism915", "meters"] }
+  ],
+  "adsb": { "lat": 0.0, "lon": 0.0 }
+}

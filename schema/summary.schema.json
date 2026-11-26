@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "summary.json",
+  "type": "object",
+  "required": ["generated_at", "receiver", "noise", "devices", "devices_total"],
+  "properties": {
+    "generated_at": { "type": "string", "format": "date-time" },
+    "receiver": { "type": "object", "properties": { "status": { "type": "string" }, "freq_mhz": { "type": "number" } } },
+    "noise": {
+      "type": "object",
+      "properties": {
+        "current_db": { "type": ["number", "null"] },
+        "baseline_db": { "type": ["number", "null"] },
+        "recent": { "type": "array", "items": { "type": "array" } },
+        "hourly": { "type": "object" }
+      }
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "last_seen"],
+        "properties": {
+          "key": { "type": "string" }, "label": { "type": "string" }, "model": { "type": "string" },
+          "last_seen": { "type": "string" }, "age_seconds": { "type": "integer" },
+          "active": { "type": "boolean" }, "count": { "type": "integer" },
+          "known": { "type": "object" }
+        }
+      }
+    },
+    "devices_total": { "type": "integer" }
+  }
+}

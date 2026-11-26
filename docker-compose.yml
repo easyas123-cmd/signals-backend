@@ -1,0 +1,42 @@
+# Each collector owns one SDR and runs continuously; the correlator and web layer share the data
+# volume. Address dongles by serial (rtl_eeprom -s) and pass USB through to the collector services.
+# Set CONSOLE_DIST=/path/to/signals-console/dist to serve the UI at / as well.
+services:
+  web:
+    build: .
+    command: ["-m", "backend.server", "--port", "8080", "--web", "/console"]
+    ports: ["8080:8080"]
+    volumes:
+      - data:/app/data
+      - ${CONSOLE_DIST:-./web}:/console:ro
+    restart: unless-stopped
+
+  correlator:
+    build: .
+    command: ["-m", "backend.correlator_service", "--data", "/app/data"]
+    volumes: [data:/app/data]
+    restart: unless-stopped
+
+  rf433:
+    build: .
+    command: ["-m", "backend.collectors.rf433", "--serial", "ISM433", "--freq", "433.92M", "--data", "/app/data"]
+    volumes: [data:/app/data]
+    devices: ["/dev/bus/usb:/dev/bus/usb"]
+    restart: unless-stopped
+
+  sweep:
+    build: .
+    command: ["-m", "backend.collectors.sweep", "--serial", "SCAN", "--range", "24M:1750M:1M", "--data", "/app/data"]
+    volumes: [data:/app/data]
+    devices: ["/dev/bus/usb:/dev/bus/usb"]
+    restart: unless-stopped
+
+  # ADS-B needs a running dump1090/readsb; point --source at its aircraft.json (path or URL):
+  # adsb:
+  #   build: .
+  #   command: ["-m", "backend.collectors.adsb", "--source", "http://dump1090/data/aircraft.json", "--lat", "0", "--lon", "0", "--data", "/app/data"]
+  #   volumes: [data:/app/data]
+  #   restart: unless-stopped
+
+volumes:
+  data:

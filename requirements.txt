@@ -1,0 +1,3 @@
+# The backend is standard-library only. Nothing to install for the sim or the collectors.
+# Hardware collectors need rtl-sdr tools on PATH (rtl_433, rtl_power) and, for ADS-B, a running
+# dump1090/readsb. See the README.
