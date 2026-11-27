@@ -29,12 +29,15 @@ without a single radio attached.
 The backend is a handful of small processes that share a `data/` directory:
 
 - **collectors** write one feed each: `rf433` (rtl_433 decodes), `sweep` (rtl_power occupancy),
-  `adsb` (dump1090), and more to come (Wi-Fi, BLE, meters, ham).
+  `adsb` (dump1090), `wifi` (airodump-ng), and `ble` (BlueZ). `wifi` and `ble` share `wifi.json`
+  through a lock, each owning its slice.
 - the **correlator** turns collector events into `incidents.json`.
 - the **web** layer serves `data/`, the `/live` SSE stream, the `/annotations` store, and `/jobs/*`.
 
 You need the RTL-SDR tools on PATH (`rtl_433`, `rtl_power`) and, for ADS-B, a running
-`dump1090`/`readsb`. Docker Compose wires it together:
+`dump1090`/`readsb`. Wi-Fi capture needs a monitor-mode adapter and the aircrack-ng suite
+(`sudo airmon-ng start wlan0`); BLE needs a Bluetooth adapter and BlueZ (`bluetoothctl`). Docker
+Compose wires it together:
 
 ```sh
 cp config.example.json config.json      # edit the SDR serials for your dongles
@@ -91,7 +94,7 @@ backend/
   correlator_service.py  real-mode correlator (tails events.jsonl)
   sdr.py                 discover by serial, plan role->serial, per-serial lock
   feeds.py               atomic feed writes + the event log
-  collectors/            rf433, sweep, adsb (hardware path)
+  collectors/            rf433, sweep, adsb, wifi, ble (hardware path)
 schema/                  JSON schema for the data contract
 config.example.json  docker-compose.yml  Dockerfile  Makefile
 ```

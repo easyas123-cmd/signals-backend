@@ -38,5 +38,26 @@ services:
   #   volumes: [data:/app/data]
   #   restart: unless-stopped
 
+  # Wi-Fi capture needs a monitor-mode interface and elevated caps. Put the adapter in monitor mode
+  # on the host first (sudo airmon-ng start wlan0 -> wlan0mon), then enable this:
+  # wifi:
+  #   build: .
+  #   command: ["-m", "backend.collectors.wifi", "--iface", "wlan0mon", "--data", "/app/data"]
+  #   volumes: [data:/app/data]
+  #   network_mode: host
+  #   cap_add: ["NET_ADMIN", "NET_RAW"]
+  #   restart: unless-stopped
+
+  # BLE scanning needs BlueZ and host Bluetooth access; bare-metal/systemd is often simpler for BLE.
+  # ble:
+  #   build: .
+  #   command: ["-m", "backend.collectors.ble", "--data", "/app/data"]
+  #   volumes:
+  #     - data:/app/data
+  #     - /var/run/dbus:/var/run/dbus
+  #   network_mode: host
+  #   privileged: true
+  #   restart: unless-stopped
+
 volumes:
   data:

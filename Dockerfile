@@ -1,7 +1,7 @@
 # Reference image: Python plus the RTL-SDR tools the collectors shell out to.
 FROM debian:stable-slim
 RUN apt-get update \
- && apt-get install -y --no-install-recommends python3 rtl-sdr rtl-433 \
+ && apt-get install -y --no-install-recommends python3 rtl-sdr rtl-433 aircrack-ng bluez \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY backend ./backend
